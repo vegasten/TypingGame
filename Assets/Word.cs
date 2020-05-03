@@ -1,11 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Word : MonoBehaviour
 {
+    public event Action OnWordFinishedTyped;
+
     [SerializeField] private WordDisplay _display = null;
 
     private string _word;
     public string GetWord => _word;
+
+    private int _currentTypedIndex;
+
 
     public void InitalizeWord(string word, Vector2 randomPosition)
     {
@@ -14,8 +20,17 @@ public class Word : MonoBehaviour
         _display.DisplayWord(word, randomPosition);
     }
 
-    public void TypeNextLetter()
+    public void TryToTypeNextLetter(char letter)
     {
-        _display.ColorNextLetter();
+        if (letter.Equals(_word[_currentTypedIndex]))
+        {
+            _display.ColorNextLetter();
+            _currentTypedIndex++;
+
+            if (_currentTypedIndex == _word.Length)
+            {
+                OnWordFinishedTyped?.Invoke();
+            }
+        }
     }
 }

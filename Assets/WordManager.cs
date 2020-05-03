@@ -5,30 +5,31 @@ using UnityEngine;
 
 public class WordManager : MonoBehaviour
 {
-    private const int MAX_NUMBER_OF_WORDS_ALIVE = 5;
+    private const int MAX_NUMBER_OF_EXISTING_WORDS = 5;
 
+    [Header("Input")]
     [SerializeField] InputReader _inputReader = null;
+
+    [Header("Game")]
     [SerializeField] RectTransform _wordContainer = null;
     [SerializeField] GameObject _wordDisplayPrefab = null;
 
     private WordGenerator _wordGenerator;
 
     private Word _activeWord;
-    private HashSet<Word> _words = new HashSet<Word>();
+    private HashSet<Word> _existingWords;
 
-    private string _writtenWord;
-    private int _currentIndex;
     private bool _shouldGenerateWords = true;
 
     private void Awake()
     {
-        _wordGenerator = new WordGenerator();
+        _existingWords = new HashSet<Word>();
+        _wordGenerator = new WordGenerator(this);
     }
 
     private void Start()
     {
         _inputReader.OnLetterTyped += typeLetter;
-
         startWordSpawner();
     }
 
@@ -46,44 +47,26 @@ public class WordManager : MonoBehaviour
     {
         while (_shouldGenerateWords)
         {
-            if (_words.Count < MAX_NUMBER_OF_WORDS_ALIVE)
+            if (_existingWords.Count < MAX_NUMBER_OF_EXISTING_WORDS)
             {
-
-                bool acceptedWord = false;
-                string generatedWord = "";
-
-                while (!acceptedWord)
-                {
-                    generatedWord = _wordGenerator.GetRandomWord();
-
-                    if (_words.Where(w => w.GetWord == generatedWord).FirstOrDefault()) // check if the generated word is already alive
-                    {
-                        continue;
-                    }
-
-                    if (_words.Where(w => w.GetWord[0] == generatedWord[0]).FirstOrDefault()) // check if there is an alive word with the same first letter
-                    {
-                        continue;
-                    }
-                    yield return null;
-                    acceptedWord = true;
-                }
-
-                spawnWord(generatedWord);
-                acceptedWord = false;
+                spawnRandomWord();
             }
 
             yield return new WaitForSeconds(0.5f);
         }
     }
 
-    private void spawnWord(string word)
+    private void spawnRandomWord()
     {
-        var wordController = Instantiate(_wordDisplayPrefab, _wordContainer).GetComponent<Word>();
-        _words.Add(wordController);
+        string wordString = _wordGenerator.GenerateRandomWordWithUniqueFirstLetter(_existingWords);
+
+        var word = Instantiate(_wordDisplayPrefab, _wordContainer).GetComponent<Word>();
+        _existingWords.Add(word);
         Vector2 randomPosition = getRandomPositionOnWordContainer();
-        wordController.InitalizeWord(word, randomPosition);
-    }   
+        word.InitalizeWord(wordString, randomPosition);
+
+        word.OnWordFinishedTyped += onWordCompleted;
+    }
 
     private Vector2 getRandomPositionOnWordContainer()
     {
@@ -100,55 +83,34 @@ public class WordManager : MonoBehaviour
     {
         if (string.IsNullOrEmpty(_activeWord?.GetWord))
         {
-            Word wordWithCorrectFirstLetter = aliveWordWithFirstLetter(letter);
+            Word wordWithCorrectFirstLetter = existingWordWithFirstLetter(letter);
             if (wordWithCorrectFirstLetter == null)
             {
                 return;
             }
 
-            if (string.IsNullOrEmpty(wordWithCorrectFirstLetter.GetWord))
-                return;
-
             _activeWord = wordWithCorrectFirstLetter;
-            _writtenWord = letter.ToString();
-            _currentIndex = 1;
-
-            _activeWord.TypeNextLetter();
+            _activeWord.TryToTypeNextLetter(letter);
         }
 
         else
         {
-            if (_activeWord.GetWord[_currentIndex] == letter)
-            {
-                _writtenWord += letter;
-                _currentIndex++;
-
-                _activeWord.TypeNextLetter();
-                Debug.Log($"At index: {_currentIndex} of the word: {_activeWord.GetWord}");
-            }
-        }
-
-        if (isWordComplete())
-        {
-            onWordCompleted();
+            _activeWord.TryToTypeNextLetter(letter);
         }
     }
 
-    private Word aliveWordWithFirstLetter(char letter)
+    private Word existingWordWithFirstLetter(char letter)
     {
-        var firstWordWithCorrectFirstLetter = _words.Where(word => word.GetWord[0] == letter).FirstOrDefault();
+        var firstWordWithCorrectFirstLetter = _existingWords.Where(word => word.GetWord[0] == letter).FirstOrDefault();
         return firstWordWithCorrectFirstLetter;
-    }
-
-    private bool isWordComplete()
-    {
-        return _activeWord.GetWord.Equals(_writtenWord);
     }
 
     private void onWordCompleted()
     {
+        _activeWord.OnWordFinishedTyped -= onWordCompleted;
+
         Debug.Log("DONE WITH WORD");
-        _words.Remove(_activeWord);
+        _existingWords.Remove(_activeWord);
         Destroy(_activeWord.gameObject);
         _activeWord = null;
     }

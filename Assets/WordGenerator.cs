@@ -1,25 +1,35 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 public class WordGenerator
 {
-    private string[] _words =
-    {
-        "ape", "annen", "anelse",
-        "bare", "bæsj", "bly",
-        "dust", "dumming", "drenere",
-        "ekkel", "evig", "esel", 
-        "fisk", "fis", "flytende",
-        "gud", "gass", "gul",
-        "hest", "hoste", "hes",
-        "ingen", "is", "ikke",
-        "jazz", "jovial", "juggel"
-    };
+    private RandomWordDatabase _wordGenerator;
 
-    public string GetRandomWord()
+    public WordGenerator(WordManager wordManager)
     {
-        int numberOfWords = _words.Length;
-        int randomIndex = Random.Range(0, numberOfWords);
+        _wordGenerator = new RandomWordDatabase();
+    }
 
-        return _words[randomIndex];
+    public string GenerateRandomWordWithUniqueFirstLetter(HashSet<Word> existingWords)
+    {
+        bool acceptableWordIsFound = false;
+        string generatedWord = "";
+
+        while (!acceptableWordIsFound)
+        {
+            generatedWord = _wordGenerator.GetRandomWord();
+
+            if (hasNoEqualFirstLetters(existingWords, generatedWord))
+            {
+                acceptableWordIsFound = true;
+            }
+        }
+
+        return generatedWord;
+    }
+
+    private static bool hasNoEqualFirstLetters(HashSet<Word> existingWords, string generatedWord)
+    {
+        return !existingWords.Any(w => w.GetWord[0] == generatedWord[0]);
     }
 }
