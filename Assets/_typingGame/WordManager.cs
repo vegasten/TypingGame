@@ -5,22 +5,28 @@ using UnityEngine;
 
 public class WordManager : MonoBehaviour
 {
-    private const int MAX_NUMBER_OF_EXISTING_WORDS = 5;
+    [Header("Rules")]
+    [SerializeField] private int _maxNumberOfAliveWords = 5;
+    [SerializeField] private float _fallingSpeed = 1.0f;
+    [SerializeField] private float _yDestroyHeight;
 
     [Header("Input")]
-    [SerializeField] InputReader _inputReader = null;
+    [SerializeField] private InputReader _inputReader = null;
 
     [Header("Game")]
-    [SerializeField] RectTransform _wordContainer = null;
-    [SerializeField] GameObject _wordDisplayPrefab = null;
+    [SerializeField] private RectTransform _wordContainer = null;
+    [SerializeField] private GameObject _wordDisplayPrefab = null;
 
+    [Header("UI")]
+    [SerializeField] private PointSystem _pointSystem;
+    
     private WordGenerator _wordGenerator;
 
     private Word _activeWord;
     private HashSet<Word> _existingWords;
 
     private bool _shouldGenerateWords = true;
-
+    
     private void Awake()
     {
         _existingWords = new HashSet<Word>();
@@ -47,7 +53,7 @@ public class WordManager : MonoBehaviour
     {
         while (_shouldGenerateWords)
         {
-            if (_existingWords.Count < MAX_NUMBER_OF_EXISTING_WORDS)
+            if (_existingWords.Count < _maxNumberOfAliveWords)
             {
                 spawnRandomWord();
             }
@@ -63,9 +69,10 @@ public class WordManager : MonoBehaviour
         var word = Instantiate(_wordDisplayPrefab, _wordContainer).GetComponent<Word>();
         _existingWords.Add(word);
         Vector2 randomPosition = getRandomPositionOnWordContainer();
-        word.InitalizeWord(wordString, randomPosition);
+        word.InitalizeWord(wordString, randomPosition, _fallingSpeed, _yDestroyHeight);
 
         word.OnWordFinishedTyped += onWordCompleted;
+        word.OnWordNotCompleted += onWordNotCompleted;
     }
 
     private Vector2 getRandomPositionOnWordContainer()
@@ -73,8 +80,8 @@ public class WordManager : MonoBehaviour
         var width = _wordContainer.rect.width;
         var height = _wordContainer.rect.height;
 
-        var randomX = Random.Range(0, width) + 100; // TODO Fix this magic number
-        var randomY = Random.Range(0, height) + 100;
+        var randomX = UnityEngine.Random.Range(0, width) + 200; // TODO Fix these magic numbers
+        var randomY = UnityEngine.Random.Range(0, height) + 950; 
 
         return new Vector2(randomX, randomY);
     }
@@ -107,11 +114,27 @@ public class WordManager : MonoBehaviour
 
     private void onWordCompleted()
     {
-        _activeWord.OnWordFinishedTyped -= onWordCompleted;
+        _pointSystem.IncrementScore(1);
 
-        Debug.Log("DONE WITH WORD");
+        _activeWord.OnWordFinishedTyped -= onWordCompleted;
+        _activeWord.OnWordNotCompleted -= onWordNotCompleted;
+
         _existingWords.Remove(_activeWord);
         Destroy(_activeWord.gameObject);
         _activeWord = null;
+    }
+
+    private void onWordNotCompleted(Word word)
+    {
+        word.OnWordFinishedTyped -= onWordCompleted;
+        word.OnWordNotCompleted -= onWordNotCompleted;
+
+        if (word == _activeWord)
+        {
+            _activeWord = null;
+        }
+
+        _existingWords.Remove(word);
+        Destroy(word.gameObject);
     }
 }
