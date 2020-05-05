@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class WordManager : MonoBehaviour
     [Header("Game")]
     [SerializeField] private RectTransform _wordContainer = null;
     [SerializeField] private GameObject _wordDisplayPrefab = null;
+    [SerializeField] private HealthSystem _healthSystem = null;
 
     [Header("UI")]
     [SerializeField] private PointSystem _pointSystem;
@@ -36,12 +38,15 @@ public class WordManager : MonoBehaviour
     private void Start()
     {
         _inputReader.OnLetterTyped += typeLetter;
+        _healthSystem.OnDeath += onGameLost;
+
         startWordSpawner();
-    }
+    }    
 
     private void OnDestroy()
     {
         _inputReader.OnLetterTyped -= typeLetter;
+        _healthSystem.OnDeath -= onGameLost;
     }
 
     private void startWordSpawner()
@@ -126,6 +131,8 @@ public class WordManager : MonoBehaviour
 
     private void onWordNotCompleted(Word word)
     {
+        _healthSystem.TakeDamage(1);
+
         word.OnWordFinishedTyped -= onWordCompleted;
         word.OnWordNotCompleted -= onWordNotCompleted;
 
@@ -136,5 +143,10 @@ public class WordManager : MonoBehaviour
 
         _existingWords.Remove(word);
         Destroy(word.gameObject);
+    }
+
+    private void onGameLost()
+    {
+        Debug.Log("Game LOST");
     }
 }

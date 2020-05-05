@@ -128,6 +128,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2036315997, guid: 73937010c9e5b8349a6f62c1e9b3457b, type: 3}
+      propertyPath: _pointText
+      value: 
+      objectReference: {fileID: 353010684}
     - target: {fileID: 2851201968525955912, guid: 73937010c9e5b8349a6f62c1e9b3457b,
         type: 3}
       propertyPath: _wordContainer
@@ -135,19 +139,9 @@ PrefabInstance:
       objectReference: {fileID: 300789633}
     - target: {fileID: 2851201968525955912, guid: 73937010c9e5b8349a6f62c1e9b3457b,
         type: 3}
-      propertyPath: _fallingSpeed
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2851201968525955912, guid: 73937010c9e5b8349a6f62c1e9b3457b,
-        type: 3}
-      propertyPath: _maxNumberOfAliveWords
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2851201968525955912, guid: 73937010c9e5b8349a6f62c1e9b3457b,
-        type: 3}
-      propertyPath: _yDestroyHeight
-      value: 250
-      objectReference: {fileID: 0}
+      propertyPath: _healthSystem
+      value: 
+      objectReference: {fileID: 2036316001}
     - target: {fileID: 2851201968525955913, guid: 73937010c9e5b8349a6f62c1e9b3457b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1026,25 +1020,18 @@ MonoBehaviour:
   _backgroundWaves: {fileID: 2125775253}
   _foreGroundWaves: {fileID: 925904971}
   _boat: {fileID: 1779739178}
---- !u!1 &2036315996 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2851201968525955927, guid: 73937010c9e5b8349a6f62c1e9b3457b,
+--- !u!114 &2036316001 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7987154097641130275, guid: 73937010c9e5b8349a6f62c1e9b3457b,
     type: 3}
   m_PrefabInstance: {fileID: 16541187}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2036315997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2036315996}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40fbe34ccebc5db43af24be20ce5abe5, type: 3}
+  m_Script: {fileID: 11500000, guid: 4f0ae00d4e8a07148a90519e23301a26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pointText: {fileID: 353010684}
 --- !u!1 &2125775252
 GameObject:
   m_ObjectHideFlags: 0

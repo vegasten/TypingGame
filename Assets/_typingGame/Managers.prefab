@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2851201968525955912}
   - component: {fileID: 2851201968525955914}
   - component: {fileID: 2036315997}
+  - component: {fileID: 7987154097641130275}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -52,6 +53,7 @@ MonoBehaviour:
   _wordContainer: {fileID: 0}
   _wordDisplayPrefab: {fileID: 134639543629937364, guid: d3aacc306921a6c4a8522999a8b26f31,
     type: 3}
+  _healthSystem: {fileID: 7987154097641130275}
   _pointSystem: {fileID: 2036315997}
 --- !u!114 &2851201968525955914
 MonoBehaviour:
@@ -78,3 +80,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pointText: {fileID: 0}
+--- !u!114 &7987154097641130275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2851201968525955927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f0ae00d4e8a07148a90519e23301a26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _startHealth: 5
