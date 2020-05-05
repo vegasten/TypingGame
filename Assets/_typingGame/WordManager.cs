@@ -148,5 +148,12 @@ public class WordManager : MonoBehaviour
     private void onGameLost()
     {
         Debug.Log("Game LOST");
+        _shouldGenerateWords = false;
+        foreach(var word in _existingWords)
+        {
+            Destroy(word.gameObject);
+        }
+
+        _activeWord = null;
     }
 }
