@@ -33,14 +33,14 @@ public class Word : MonoBehaviour
         }
     }
 
-    public void InitalizeWord(string word, Vector2 randomPosition, float fallingSpeed, float yDestroyHeight)
+    public void InitalizeWord(string word, Vector2 randomPosition, RulesDataModel rulesData)
     {
         _word = word;
         _display.SetWord(word);
         _display.DisplayWord(word, randomPosition);
 
-        _fallingSpeed = fallingSpeed;
-        _yDestroyHeight = yDestroyHeight;
+        _fallingSpeed = rulesData.FallingSpeed;
+        _yDestroyHeight = rulesData.DestroyHeight;
     }
 
     public void TryToTypeNextLetter(char letter)

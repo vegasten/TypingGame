@@ -7,11 +7,10 @@ public class GameManager : MonoBehaviour
 {
     [Header("Input")]
     [SerializeField] private InputReader _inputReader = null;
+    [SerializeField] private WordSpawner _wordSpawner = null;
 
     [Header("Game")]
     [SerializeField] private float _yDestroyHeight = 200f;
-    [SerializeField] private RectTransform _wordContainer = null;
-    [SerializeField] private GameObject _wordDisplayPrefab = null;
     [SerializeField] private HealthSystem _healthSystem = null;
     [SerializeField] private PointSystem _pointSystem = null;
 
@@ -19,25 +18,21 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Countdown _countdown = null;
     [SerializeField] private GameEndScreenPresenter _gameEndScreenPresenter = null;
 
-    private WordGenerator _wordGenerator;
-
     private Word _activeWord;
     private HashSet<Word> _existingWords;
 
-    private bool _shouldGenerateWords = true;
+    private RulesDataModel _rulesData;
 
-    private int _maxNumberOfAliveWords;
-    private float _fallingSpeed;
+    private bool _shouldGenerateWords = true;
 
     private void Awake()
     {
         _existingWords = new HashSet<Word>();
-        _wordGenerator = new WordGenerator();
-    }    
+    }
 
     private void Start()
     {
-        initializeDifficultyRules();        
+        initializeDifficultyRules();
 
         _inputReader.OnLetterTyped += typeLetter;
         _healthSystem.OnDeath += onGameLost;
@@ -62,8 +57,13 @@ public class GameManager : MonoBehaviour
 
     private void initializeDifficultyRules()
     {
-        _fallingSpeed = ExecutiveManager.Instance.GetCurrentDifficultyData().DropSpeed;
-        _maxNumberOfAliveWords = ExecutiveManager.Instance.GetCurrentDifficultyData().MaxWordsAtTheSameTime;
+        _rulesData = new RulesDataModel
+        {
+            FallingSpeed = ExecutiveManager.Instance.GetCurrentDifficultyData().DropSpeed,
+            DestroyHeight = _yDestroyHeight,
+            MaxNumberOfAliveWords = ExecutiveManager.Instance.GetCurrentDifficultyData().MaxWordsAtTheSameTime,
+            TimeBetweenSpawn = 1.0f
+        };
     }
 
     private void startWordSpawner()
@@ -75,37 +75,20 @@ public class GameManager : MonoBehaviour
     {
         while (_shouldGenerateWords)
         {
-            if (_existingWords.Count < _maxNumberOfAliveWords)
+            while (_shouldGenerateWords)
             {
-                spawnRandomWord();
+                if (_existingWords.Count < _rulesData.MaxNumberOfAliveWords)
+                {
+                    var word = _wordSpawner.SpawnRandomWord(_existingWords, _rulesData);                    
+                    word.OnWordFinishedTyped += onWordCompleted;
+                    word.OnWordNotCompleted += onWordNotCompleted;
+
+                    _existingWords.Add(word);
+                }
+
+                yield return new WaitForSeconds(_rulesData.TimeBetweenSpawn);
             }
-
-            yield return new WaitForSeconds(0.5f);
         }
-    }
-
-    private void spawnRandomWord()
-    {
-        string wordString = _wordGenerator.GenerateRandomWordWithUniqueFirstLetter(_existingWords);
-
-        var word = Instantiate(_wordDisplayPrefab, _wordContainer).GetComponent<Word>();
-        _existingWords.Add(word);
-        Vector2 randomPosition = getRandomPositionOnWordContainer();
-        word.InitalizeWord(wordString, randomPosition, _fallingSpeed, _yDestroyHeight);
-
-        word.OnWordFinishedTyped += onWordCompleted;
-        word.OnWordNotCompleted += onWordNotCompleted;
-    }
-
-    private Vector2 getRandomPositionOnWordContainer()
-    {
-        var width = _wordContainer.rect.width;
-        var height = _wordContainer.rect.height;
-
-        var randomX = UnityEngine.Random.Range(0, width) + 200; // TODO Fix these magic numbers
-        var randomY = UnityEngine.Random.Range(0, height) + 950;
-
-        return new Vector2(randomX, randomY);
     }
 
     private void typeLetter(char letter)

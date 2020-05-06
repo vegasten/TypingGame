@@ -132,6 +132,11 @@ PrefabInstance:
       propertyPath: _pointText
       value: 
       objectReference: {fileID: 353010684}
+    - target: {fileID: 742029003967757765, guid: 73937010c9e5b8349a6f62c1e9b3457b,
+        type: 3}
+      propertyPath: _wordContainer
+      value: 
+      objectReference: {fileID: 300789633}
     - target: {fileID: 2851201968525955912, guid: 73937010c9e5b8349a6f62c1e9b3457b,
         type: 3}
       propertyPath: _wordContainer
@@ -207,6 +212,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Managers
       objectReference: {fileID: 0}
+    - target: {fileID: 7987154097641130275, guid: 73937010c9e5b8349a6f62c1e9b3457b,
+        type: 3}
+      propertyPath: _healthPresenter
+      value: 
+      objectReference: {fileID: 1153189289}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73937010c9e5b8349a6f62c1e9b3457b, type: 3}
 --- !u!1 &168466794
@@ -1650,6 +1660,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0adaf8e05d43fa14aa3da1f1f6ba597d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _boatSprite: {fileID: 0}
 --- !u!1 &1250811728
 GameObject:
   m_ObjectHideFlags: 0

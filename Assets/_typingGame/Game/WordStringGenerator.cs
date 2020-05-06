@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-public class WordGenerator
+public class WordStringGenerator
 {
     private RandomWordDatabase _wordGenerator;
 
-    public WordGenerator()
+    public WordStringGenerator()
     {
         _wordGenerator = new RandomWordDatabase();
     }
