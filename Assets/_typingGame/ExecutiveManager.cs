@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static DifficultyEnum;
 
 public class ExecutiveManager : MonoBehaviour
 {
-    [SerializeField] private List<GameDifficultyScriptableObject> _difficultyData = null;
-
     public static ExecutiveManager Instance;
 
+    [SerializeField] private List<GameDifficultyScriptableObject> _difficultyData = null;
+    public List<GameDifficultyScriptableObject> AllDifficultiesData => _difficultyData;
+    
     private Difficulty _difficulty = Difficulty.Easy;
 
     private void Awake()
@@ -34,13 +36,13 @@ public class ExecutiveManager : MonoBehaviour
         _difficulty = difficulty;
     }
 
-    public GameDifficultyScriptableObject GetDifficultyData()
+    public GameDifficultyScriptableObject GetCurrentDifficultyData()
     {
-        return _difficultyData[(int)_difficulty];
+        return _difficultyData.Where(data => data.Difficulty == _difficulty).FirstOrDefault();
     }
 
     public void LoadStartMenuScene()
     {
         SceneManager.LoadScene(0); // Load start menu scene
-    }    
+    }
 }

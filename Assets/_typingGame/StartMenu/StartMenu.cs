@@ -1,7 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static DifficultyEnum;
 
 public class StartMenu : MonoBehaviour
 {
@@ -24,29 +23,18 @@ public class StartMenu : MonoBehaviour
 
     private void onChangeDifficulty()
     {
-        var currentDifficulty = ExecutiveManager.Instance.GetDifficultyData().Difficulty;
+        var currentDifficulty = ExecutiveManager.Instance.GetCurrentDifficultyData();
+        var allDifficulties = ExecutiveManager.Instance.AllDifficultiesData;
 
-        switch (currentDifficulty)
-        {
-            case Difficulty.Easy:
-                ExecutiveManager.Instance.SetDifficulty(Difficulty.Medium);
-                break;
-            case Difficulty.Medium:
-                ExecutiveManager.Instance.SetDifficulty(Difficulty.Hard);
-                break;
-            case Difficulty.Hard:
-                ExecutiveManager.Instance.SetDifficulty(Difficulty.Easy);
-                break;
-            default:
-                Debug.LogError("Reached a difficulty state that should not be possible");
-                break;
-        }
+        int newIndex = (allDifficulties.IndexOf(currentDifficulty) + 1) % allDifficulties.Count;
+
+        ExecutiveManager.Instance.SetDifficulty(allDifficulties[newIndex].Difficulty);
 
         updateUI();
     }
 
     private void updateUI()
     {
-        _difficultyText.text = $"Vanskelighetsgrad: {ExecutiveManager.Instance.GetDifficultyData().Difficulty.ToString()}";
+        _difficultyText.text = $"Vanskelighetsgrad: {ExecutiveManager.Instance.GetCurrentDifficultyData().Difficulty.ToString()}";
     }
 }

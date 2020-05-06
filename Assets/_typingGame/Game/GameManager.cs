@@ -34,13 +34,13 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         _existingWords = new HashSet<Word>();
-        _wordGenerator = new WordGenerator(this);
+        _wordGenerator = new WordGenerator();
     }
 
     private void Start()
     {
-        _fallingSpeed = ExecutiveManager.Instance.GetDifficultyData().DropSpeed;
-        _maxNumberOfAliveWords = ExecutiveManager.Instance.GetDifficultyData().MaxWordsAtTheSameTime;
+        _fallingSpeed = ExecutiveManager.Instance.GetCurrentDifficultyData().DropSpeed;
+        _maxNumberOfAliveWords = ExecutiveManager.Instance.GetCurrentDifficultyData().MaxWordsAtTheSameTime;
 
         _inputReader.OnLetterTyped += typeLetter;
         _healthSystem.OnDeath += onGameLost;
@@ -50,7 +50,6 @@ public class GameManager : MonoBehaviour
 
         _gameEndScreenPresenter.OnRestartButtonClicked += restartGame;
         _gameEndScreenPresenter.OnReturnToStartMenuButtonClicked += goBackToStartMenu;
-
     }
 
     private void OnDestroy()
@@ -58,6 +57,9 @@ public class GameManager : MonoBehaviour
         _inputReader.OnLetterTyped -= typeLetter;
         _healthSystem.OnDeath -= onGameLost;
         _countdown.OnCountdownCompleted -= startWordSpawner;
+
+        _gameEndScreenPresenter.OnRestartButtonClicked -= restartGame;
+        _gameEndScreenPresenter.OnReturnToStartMenuButtonClicked -= goBackToStartMenu;
     }
 
     private void startWordSpawner()
