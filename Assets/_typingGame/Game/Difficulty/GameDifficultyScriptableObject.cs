@@ -5,7 +5,8 @@ using static DifficultyEnum;
 public class GameDifficultyScriptableObject : ScriptableObject
 {
     public Difficulty Difficulty;
-    public float DropSpeed = 50f;
+    public float FallingSpeed = 50f;
+    public float TimeBetweenSpawningWord = 2f;
     public int MinWordLength = 2;
     public int MaxWordLength = 5;
     public int MaxWordsAtTheSameTime = 5;

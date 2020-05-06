@@ -1,32 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     [Header("Input")]
     [SerializeField] private InputReader _inputReader = null;
-    [SerializeField] private WordSpawner _wordSpawner = null;
 
     [Header("Game")]
-    [SerializeField] private float _yDestroyHeight = 200f;
+    [SerializeField] private float _destroyHeight = 200f;
     [SerializeField] private HealthSystem _healthSystem = null;
     [SerializeField] private PointSystem _pointSystem = null;
+    [SerializeField] private WordSpawner _wordSpawner = null;
 
     [Header("UI")]
     [SerializeField] private Countdown _countdown = null;
     [SerializeField] private GameEndScreenPresenter _gameEndScreenPresenter = null;
 
+    private LetterTyper _letterTyper = null;
+
     private Word _activeWord;
     private HashSet<Word> _existingWords;
 
-    private RulesDataModel _rulesData;
+    private RulesDataModel _rules;
 
     private bool _shouldGenerateWords = true;
 
     private void Awake()
     {
+        _letterTyper = new LetterTyper();
         _existingWords = new HashSet<Word>();
     }
 
@@ -57,12 +59,15 @@ public class GameManager : MonoBehaviour
 
     private void initializeDifficultyRules()
     {
-        _rulesData = new RulesDataModel
+        var difficultyData = ExecutiveManager.Instance.GetCurrentDifficultyData();
+
+        _rules = new RulesDataModel
         {
-            FallingSpeed = ExecutiveManager.Instance.GetCurrentDifficultyData().DropSpeed,
-            DestroyHeight = _yDestroyHeight,
-            MaxNumberOfAliveWords = ExecutiveManager.Instance.GetCurrentDifficultyData().MaxWordsAtTheSameTime,
-            TimeBetweenSpawn = 1.0f
+            FallingSpeed = difficultyData.FallingSpeed,
+            DestroyHeight = _destroyHeight,
+            MaxNumberOfAliveWords = difficultyData.MaxWordsAtTheSameTime,
+            TimeBetweenSpawningWord = difficultyData.TimeBetweenSpawningWord,
+            DamageOnFailedWord = 1
         };
     }
 
@@ -75,46 +80,22 @@ public class GameManager : MonoBehaviour
     {
         while (_shouldGenerateWords)
         {
-            while (_shouldGenerateWords)
+            if (_existingWords.Count < _rules.MaxNumberOfAliveWords)
             {
-                if (_existingWords.Count < _rulesData.MaxNumberOfAliveWords)
-                {
-                    var word = _wordSpawner.SpawnRandomWord(_existingWords, _rulesData);                    
-                    word.OnWordFinishedTyped += onWordCompleted;
-                    word.OnWordNotCompleted += onWordNotCompleted;
+                var word = _wordSpawner.SpawnRandomWord(_existingWords, _rules);
+                word.OnWordFinishedTyped += onWordCompleted;
+                word.OnWordNotCompleted += onWordNotCompleted;
 
-                    _existingWords.Add(word);
-                }
-
-                yield return new WaitForSeconds(_rulesData.TimeBetweenSpawn);
+                _existingWords.Add(word);
             }
+
+            yield return new WaitForSeconds(_rules.TimeBetweenSpawningWord);
         }
     }
 
     private void typeLetter(char letter)
     {
-        if (string.IsNullOrEmpty(_activeWord?.GetWord))
-        {
-            Word wordWithCorrectFirstLetter = existingWordWithFirstLetter(letter);
-            if (wordWithCorrectFirstLetter == null)
-            {
-                return;
-            }
-
-            _activeWord = wordWithCorrectFirstLetter;
-            _activeWord.TryToTypeNextLetter(letter);
-        }
-
-        else
-        {
-            _activeWord.TryToTypeNextLetter(letter);
-        }
-    }
-
-    private Word existingWordWithFirstLetter(char letter)
-    {
-        var firstWordWithCorrectFirstLetter = _existingWords.Where(word => word.GetWord[0] == letter).FirstOrDefault();
-        return firstWordWithCorrectFirstLetter;
+        _activeWord = _letterTyper.TryToTypeLetter(letter, _activeWord, _existingWords);
     }
 
     private void onWordCompleted()
@@ -131,7 +112,7 @@ public class GameManager : MonoBehaviour
 
     private void onWordNotCompleted(Word word)
     {
-        _healthSystem.TakeDamage(1);
+        _healthSystem.TakeDamage(_rules.DamageOnFailedWord);
 
         word.OnWordFinishedTyped -= onWordCompleted;
         word.OnWordNotCompleted -= onWordNotCompleted;

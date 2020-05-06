@@ -139,11 +139,6 @@ PrefabInstance:
       objectReference: {fileID: 300789633}
     - target: {fileID: 2851201968525955912, guid: 73937010c9e5b8349a6f62c1e9b3457b,
         type: 3}
-      propertyPath: _wordContainer
-      value: 
-      objectReference: {fileID: 300789633}
-    - target: {fileID: 2851201968525955912, guid: 73937010c9e5b8349a6f62c1e9b3457b,
-        type: 3}
       propertyPath: _countdown
       value: 
       objectReference: {fileID: 501229459}

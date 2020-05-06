@@ -48,13 +48,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputReader: {fileID: 2851201968525955914}
-  _wordSpawner: {fileID: 742029003967757765}
-  _yDestroyHeight: 250
-  _wordContainer: {fileID: 0}
-  _wordDisplayPrefab: {fileID: 134639543629937364, guid: d3aacc306921a6c4a8522999a8b26f31,
-    type: 3}
+  _destroyHeight: 200
   _healthSystem: {fileID: 7987154097641130275}
   _pointSystem: {fileID: 2036315997}
+  _wordSpawner: {fileID: 742029003967757765}
   _countdown: {fileID: 0}
   _gameEndScreenPresenter: {fileID: 0}
 --- !u!114 &742029003967757765

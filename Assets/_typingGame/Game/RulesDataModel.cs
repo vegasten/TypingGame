@@ -3,5 +3,6 @@
     public float FallingSpeed;
     public float DestroyHeight;
     public int MaxNumberOfAliveWords;
-    public float TimeBetweenSpawn;
+    public float TimeBetweenSpawningWord;
+    public int DamageOnFailedWord;
 }
