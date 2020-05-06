@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d9c2ae4eea44b34d86e3aa3af5bcae2, type: 3}
   m_Name: Medium
   m_EditorClassIdentifier: 
+  Difficulty: 1
   DropSpeed: 100
   MinWordLength: 2
   MaxWordLength: 7
+  MaxWordsAtTheSameTime: 5

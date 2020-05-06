@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WordManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [Header("Rules")]
     [SerializeField] private int _maxNumberOfAliveWords = 5;
-    [SerializeField] private float _yDestroyHeight;
+    [SerializeField] private float _yDestroyHeight = 200.0f;
 
     [Header("Input")]
     [SerializeField] private InputReader _inputReader = null;
@@ -17,11 +16,11 @@ public class WordManager : MonoBehaviour
     [SerializeField] private RectTransform _wordContainer = null;
     [SerializeField] private GameObject _wordDisplayPrefab = null;
     [SerializeField] private HealthSystem _healthSystem = null;
+    [SerializeField] private PointSystem _pointSystem = null;
 
     [Header("UI")]
-    [SerializeField] private PointSystem _pointSystem;
-    [SerializeField] private Countdown _countdown;
-    [SerializeField] private GameEndScreenPresenter _gameEndScreenPresenter;
+    [SerializeField] private Countdown _countdown = null;
+    [SerializeField] private GameEndScreenPresenter _gameEndScreenPresenter = null;
 
     private WordGenerator _wordGenerator;
 
@@ -40,7 +39,8 @@ public class WordManager : MonoBehaviour
 
     private void Start()
     {
-        _fallingSpeed = GameManager.Instance.GetDifficultyData().DropSpeed;
+        _fallingSpeed = ExecutiveManager.Instance.GetDifficultyData().DropSpeed;
+        _maxNumberOfAliveWords = ExecutiveManager.Instance.GetDifficultyData().MaxWordsAtTheSameTime;
 
         _inputReader.OnLetterTyped += typeLetter;
         _healthSystem.OnDeath += onGameLost;
@@ -50,7 +50,8 @@ public class WordManager : MonoBehaviour
 
         _gameEndScreenPresenter.OnRestartButtonClicked += restartGame;
         _gameEndScreenPresenter.OnReturnToStartMenuButtonClicked += goBackToStartMenu;
-    }   
+
+    }
 
     private void OnDestroy()
     {
@@ -157,7 +158,6 @@ public class WordManager : MonoBehaviour
 
     private void onGameLost()
     {
-        Debug.Log("Game LOST");
         _shouldGenerateWords = false;
         foreach (var word in _existingWords)
         {
@@ -173,11 +173,11 @@ public class WordManager : MonoBehaviour
 
     private void goBackToStartMenu()
     {
-        GameManager.Instance.LoadStartMenuScene();
+        ExecutiveManager.Instance.LoadStartMenuScene();
     }
 
     private void restartGame()
     {
-        GameManager.Instance.LoadGameScene();
+        ExecutiveManager.Instance.LoadGameScene();
     }
 }

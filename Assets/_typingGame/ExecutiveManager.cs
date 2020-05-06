@@ -3,18 +3,25 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static DifficultyEnum;
 
-public class GameManager : MonoBehaviour
+public class ExecutiveManager : MonoBehaviour
 {
-    [SerializeField] private List<GameDifficultyScriptableObject> _difficultyData;
+    [SerializeField] private List<GameDifficultyScriptableObject> _difficultyData = null;
 
-    public static GameManager Instance;
+    public static ExecutiveManager Instance;
 
-    private Difficulty _difficulty;
+    private Difficulty _difficulty = Difficulty.Easy;
 
     private void Awake()
     {
-        Instance = this;
-        DontDestroyOnLoad(this);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void LoadGameScene()

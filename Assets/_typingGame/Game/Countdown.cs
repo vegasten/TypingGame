@@ -7,7 +7,7 @@ public class Countdown : MonoBehaviour
 {
     public event Action OnCountdownCompleted;
 
-    [SerializeField] private TMP_Text _countdownText;
+    [SerializeField] private TMP_Text _countdownText = null;
 
     public void StartCountdownSequence(int startNumber = 3, float waitBetweenEachNumber = 1.0f)
     {

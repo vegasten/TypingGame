@@ -8,9 +8,9 @@ public class GameEndScreenPresenter : MonoBehaviour
     public event Action OnRestartButtonClicked;
     public event Action OnReturnToStartMenuButtonClicked;
 
-    [SerializeField] private TMP_Text _scoreText;
-    [SerializeField] private Button _restartButton;
-    [SerializeField] private Button _returnToStartMenuButton;
+    [SerializeField] private TMP_Text _scoreText = null;
+    [SerializeField] private Button _restartButton = null;
+    [SerializeField] private Button _returnToStartMenuButton = null;
 
     private void Start()
     {

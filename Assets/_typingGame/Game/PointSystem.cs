@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PointSystem : MonoBehaviour
 {
-    [SerializeField] TMP_Text _pointText;
+    [SerializeField] TMP_Text _pointText = null;
 
     public int Points { get; private set; }
 

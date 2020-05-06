@@ -1,22 +1,13 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static DifficultyEnum;
 
 public class StartMenu : MonoBehaviour
 {
-    [SerializeField] private Button _startGameButton;
-    [SerializeField] private Button _changeDifficultyButton;
-    [SerializeField] private TMP_Text _difficultyText;
-
-    private Difficulty _currentDifficulty = Difficulty.Easy;
-    private GameManager _gameManager;
-
-    private void Awake()
-    {
-        _gameManager = GameManager.Instance;
-    }
+    [SerializeField] private Button _startGameButton = null;
+    [SerializeField] private Button _changeDifficultyButton = null;
+    [SerializeField] private TMP_Text _difficultyText = null;
 
     private void Start()
     {
@@ -28,33 +19,34 @@ public class StartMenu : MonoBehaviour
 
     private void onStartGame()
     {
-        _gameManager.LoadGameScene();
+        ExecutiveManager.Instance.LoadGameScene();
     }
 
     private void onChangeDifficulty()
     {
-        switch (_currentDifficulty)
+        var currentDifficulty = ExecutiveManager.Instance.GetDifficultyData().Difficulty;
+
+        switch (currentDifficulty)
         {
             case Difficulty.Easy:
-                _currentDifficulty = Difficulty.Medium;
+                ExecutiveManager.Instance.SetDifficulty(Difficulty.Medium);
                 break;
             case Difficulty.Medium:
-                _currentDifficulty = Difficulty.Hard;
+                ExecutiveManager.Instance.SetDifficulty(Difficulty.Hard);
                 break;
             case Difficulty.Hard:
-                _currentDifficulty = Difficulty.Easy;
+                ExecutiveManager.Instance.SetDifficulty(Difficulty.Easy);
                 break;
             default:
                 Debug.LogError("Reached a difficulty state that should not be possible");
                 break;
         }
 
-        _gameManager.SetDifficulty(_currentDifficulty);
         updateUI();
     }
 
     private void updateUI()
     {
-        _difficultyText.text = $"Vanskelighetsgrad: {_currentDifficulty.ToString()}";
+        _difficultyText.text = $"Vanskelighetsgrad: {ExecutiveManager.Instance.GetDifficultyData().Difficulty.ToString()}";
     }
 }

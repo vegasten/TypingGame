@@ -5,7 +5,7 @@ public class WordGenerator
 {
     private RandomWordDatabase _wordGenerator;
 
-    public WordGenerator(WordManager wordManager)
+    public WordGenerator(GameManager wordManager)
     {
         _wordGenerator = new RandomWordDatabase();
     }

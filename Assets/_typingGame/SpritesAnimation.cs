@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SpritesAnimation : MonoBehaviour
 {
-    [SerializeField] private Transform _backgroundWaves;
-    [SerializeField] private Transform _foreGroundWaves;
-    [SerializeField] private Transform _boat;
+    [SerializeField] private Transform _backgroundWaves = null;
+    [SerializeField] private Transform _foreGroundWaves = null;
+    [SerializeField] private Transform _boat = null;
 
   
     private void Start()
