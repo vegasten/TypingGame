@@ -5,14 +5,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Rules")]
-    [SerializeField] private int _maxNumberOfAliveWords = 5;
-    [SerializeField] private float _yDestroyHeight = 200.0f;
-
     [Header("Input")]
     [SerializeField] private InputReader _inputReader = null;
 
     [Header("Game")]
+    [SerializeField] private float _yDestroyHeight = 200f;
     [SerializeField] private RectTransform _wordContainer = null;
     [SerializeField] private GameObject _wordDisplayPrefab = null;
     [SerializeField] private HealthSystem _healthSystem = null;
@@ -29,37 +26,44 @@ public class GameManager : MonoBehaviour
 
     private bool _shouldGenerateWords = true;
 
+    private int _maxNumberOfAliveWords;
     private float _fallingSpeed;
 
     private void Awake()
     {
         _existingWords = new HashSet<Word>();
         _wordGenerator = new WordGenerator();
-    }
+    }    
 
     private void Start()
     {
-        _fallingSpeed = ExecutiveManager.Instance.GetCurrentDifficultyData().DropSpeed;
-        _maxNumberOfAliveWords = ExecutiveManager.Instance.GetCurrentDifficultyData().MaxWordsAtTheSameTime;
+        initializeDifficultyRules();        
 
         _inputReader.OnLetterTyped += typeLetter;
         _healthSystem.OnDeath += onGameLost;
 
-        _countdown.OnCountdownCompleted += startWordSpawner;
-        _countdown.StartCountdownSequence();
-
         _gameEndScreenPresenter.OnRestartButtonClicked += restartGame;
         _gameEndScreenPresenter.OnReturnToStartMenuButtonClicked += goBackToStartMenu;
+
+        _countdown.OnCountdownCompleted += startWordSpawner;
+        _countdown.StartCountdownSequence();
     }
 
     private void OnDestroy()
     {
         _inputReader.OnLetterTyped -= typeLetter;
         _healthSystem.OnDeath -= onGameLost;
-        _countdown.OnCountdownCompleted -= startWordSpawner;
 
         _gameEndScreenPresenter.OnRestartButtonClicked -= restartGame;
         _gameEndScreenPresenter.OnReturnToStartMenuButtonClicked -= goBackToStartMenu;
+
+        _countdown.OnCountdownCompleted -= startWordSpawner;
+    }
+
+    private void initializeDifficultyRules()
+    {
+        _fallingSpeed = ExecutiveManager.Instance.GetCurrentDifficultyData().DropSpeed;
+        _maxNumberOfAliveWords = ExecutiveManager.Instance.GetCurrentDifficultyData().MaxWordsAtTheSameTime;
     }
 
     private void startWordSpawner()
