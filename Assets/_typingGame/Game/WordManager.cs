@@ -8,7 +8,6 @@ public class WordManager : MonoBehaviour
 {
     [Header("Rules")]
     [SerializeField] private int _maxNumberOfAliveWords = 5;
-    [SerializeField] private float _fallingSpeed = 1.0f;
     [SerializeField] private float _yDestroyHeight;
 
     [Header("Input")]
@@ -21,14 +20,18 @@ public class WordManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private PointSystem _pointSystem;
-    
+    [SerializeField] private Countdown _countdown;
+    [SerializeField] private GameEndScreenPresenter _gameEndScreenPresenter;
+
     private WordGenerator _wordGenerator;
 
     private Word _activeWord;
     private HashSet<Word> _existingWords;
 
     private bool _shouldGenerateWords = true;
-    
+
+    private float _fallingSpeed;
+
     private void Awake()
     {
         _existingWords = new HashSet<Word>();
@@ -37,16 +40,23 @@ public class WordManager : MonoBehaviour
 
     private void Start()
     {
+        _fallingSpeed = GameManager.Instance.GetDifficultyData().DropSpeed;
+
         _inputReader.OnLetterTyped += typeLetter;
         _healthSystem.OnDeath += onGameLost;
 
-        startWordSpawner();
-    }    
+        _countdown.OnCountdownCompleted += startWordSpawner;
+        _countdown.StartCountdownSequence();
+
+        _gameEndScreenPresenter.OnRestartButtonClicked += restartGame;
+        _gameEndScreenPresenter.OnReturnToStartMenuButtonClicked += goBackToStartMenu;
+    }   
 
     private void OnDestroy()
     {
         _inputReader.OnLetterTyped -= typeLetter;
         _healthSystem.OnDeath -= onGameLost;
+        _countdown.OnCountdownCompleted -= startWordSpawner;
     }
 
     private void startWordSpawner()
@@ -86,7 +96,7 @@ public class WordManager : MonoBehaviour
         var height = _wordContainer.rect.height;
 
         var randomX = UnityEngine.Random.Range(0, width) + 200; // TODO Fix these magic numbers
-        var randomY = UnityEngine.Random.Range(0, height) + 950; 
+        var randomY = UnityEngine.Random.Range(0, height) + 950;
 
         return new Vector2(randomX, randomY);
     }
@@ -149,11 +159,25 @@ public class WordManager : MonoBehaviour
     {
         Debug.Log("Game LOST");
         _shouldGenerateWords = false;
-        foreach(var word in _existingWords)
+        foreach (var word in _existingWords)
         {
             Destroy(word.gameObject);
         }
 
         _activeWord = null;
+
+        _gameEndScreenPresenter.SetGameEndScreenUI(_pointSystem.Points);
+        _gameEndScreenPresenter.gameObject.SetActive(true);
+        _pointSystem.ResetScore();
+    }
+
+    private void goBackToStartMenu()
+    {
+        GameManager.Instance.LoadStartMenuScene();
+    }
+
+    private void restartGame()
+    {
+        GameManager.Instance.LoadGameScene();
     }
 }

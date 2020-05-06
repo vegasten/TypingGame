@@ -17,6 +17,11 @@ public class PointSystem : MonoBehaviour
         Points += points;
         updateUI();
     }
+
+    public void ResetScore()
+    {
+        Points = 0;
+    }
     
     private void updateUI()
     {
