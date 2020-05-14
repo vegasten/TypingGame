@@ -16,6 +16,7 @@ public class Word : MonoBehaviour
     private int _currentTypedIndex;
 
     private float _fallingSpeed;
+    private float _fallingSpeedVariance = 0.25f;
     private float _yDestroyHeight;
 
     private bool _canFail = true;
@@ -40,8 +41,10 @@ public class Word : MonoBehaviour
         _word = word;
         _display.SetWord(word);
         _display.DisplayWord(word, randomPosition);
+        
+        var randomFallingSpeed = rulesData.FallingSpeed + UnityEngine.Random.Range(-_fallingSpeedVariance, _fallingSpeedVariance);
+        _fallingSpeed = randomFallingSpeed;
 
-        _fallingSpeed = rulesData.FallingSpeed;
         _yDestroyHeight = rulesData.DestroyHeight;
     }
 

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Medium
   m_EditorClassIdentifier: 
   Difficulty: 1
-  FallingSpeed: 100
+  FallingSpeed: 75
   TimeBetweenSpawningWord: 1
   MinWordLength: 2
-  MaxWordLength: 7
+  MaxWordLength: 4
   MaxWordsAtTheSameTime: 5

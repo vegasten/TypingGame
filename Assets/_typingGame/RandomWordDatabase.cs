@@ -24,40 +24,32 @@ public class RandomWordDatabase
             {
                 if (string.IsNullOrEmpty(line))
                 {
-                    return; // TODO: Why does not continue work here?
+                    continue;
                 }
 
-                var lineOfWords = line.ToLower().Split(' ');
+                var lineOfWords = line.Trim().ToLower().Split(' ');
                 var filteredListOfWords = lineOfWords.Where(x => !x.Contains('æ') && !x.Contains('ø') && !x.Contains('å')).ToArray();
 
                 if (filteredListOfWords.Length == 0)
                 {
-                    return; // TODO: Why does not continue work here?
-                }   
-
-                _lengthOfWordDictionary[filteredListOfWords[0].Length].AddRange(filteredListOfWords);
+                    continue;                 }
+                try
+                {
+                    _lengthOfWordDictionary[filteredListOfWords[0].Length].AddRange(filteredListOfWords);
+                }
+                catch
+                {
+                    Debug.LogError($"Error in initializing dictionary with line: {line}");
+                }
             }
         }
     }
 
-    private string[] _words =
-    {
-        "ape", "annen", "anelse",
-        "bare", "bæsj", "bly",
-        "dust", "dumming", "drenere",
-        "ekkel", "evig", "esel",
-        "fisk", "fis", "flytende",
-        "gud", "gass", "gul",
-        "hest", "hoste", "hes",
-        "ingen", "is", "ikke",
-        "jazz", "jovial", "juggel"
-    };
-
     public string GetRandomWord(int minLength, int maxLength)
     {
-        int randomLength = Random.Range(minLength, maxLength + 1);
-        var listOfWords = _lengthOfWordDictionary[randomLength];
+            int randomLength = Random.Range(minLength, maxLength + 1);
+            var listOfWords = _lengthOfWordDictionary[randomLength];       
 
-        return listOfWords[Random.Range(0, listOfWords.Count)];
+            return listOfWords[Random.Range(0, listOfWords.Count)];               
     }
 }
