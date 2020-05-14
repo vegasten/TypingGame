@@ -18,6 +18,9 @@ public class SpritesAnimation : MonoBehaviour
     [SerializeField] private GameObject _explosionParticleEffectPrefab = null;
     [SerializeField] private GameObject _smokeParticleEffectPrefab = null;
 
+    [Header("Camera Shake")]
+    [SerializeField] private CameraShaker _cameraShaker;
+
 
     private void Start()
     {
@@ -40,11 +43,12 @@ public class SpritesAnimation : MonoBehaviour
 
     public void AnimateWordFailed(Transform target)
     {
-
+        _cameraShaker.Shake(0.3f, 0.3f);
     }
 
     private async Task shootCannonAtPosition(Vector3 targetPosition) 
     {
+
         float animationTime = 0.4f; // TODO Calculate this number from the distance and vary by set speed
                
         _cannon.right = targetPosition - _cannon.position;
@@ -54,6 +58,8 @@ public class SpritesAnimation : MonoBehaviour
         cannonball.transform.DOMove(targetPosition, animationTime).SetEase(Ease.Linear);
 
         await Task.Delay((int)(animationTime * 1000));
+
+        _cameraShaker.Shake(0.1f, 0.1f);
 
         spawnParticleSystemAtPosition(cannonball.transform.position, _explosionParticleEffectPrefab);
         Destroy(cannonball);
@@ -71,7 +77,6 @@ public class SpritesAnimation : MonoBehaviour
         Assert.IsNotNull(particleSystem, "Trying to use a gameobject that does not have a particle system");
 
         yield return new WaitForSeconds(particleSystem.main.duration);
-        
         Destroy(gameobjectWithParticleSystem);
     }
 }

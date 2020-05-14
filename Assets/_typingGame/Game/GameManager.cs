@@ -135,6 +135,7 @@ public class GameManager : MonoBehaviour
 
         _existingWords.Remove(word);
         Destroy(word.gameObject);
+        _spriteAnimation.AnimateWordFailed(null);
     }
 
     private void onGameLost()
