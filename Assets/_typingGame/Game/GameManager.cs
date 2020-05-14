@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Countdown _countdown = null;
     [SerializeField] private GameEndScreenPresenter _gameEndScreenPresenter = null;
 
+    [Header("Animation")]
+    [SerializeField] private SpritesAnimation _spriteAnimation = null;
+
     private LetterTyper _letterTyper = null;
 
     private Word _activeWord;
@@ -95,10 +98,14 @@ public class GameManager : MonoBehaviour
 
     private void typeLetter(char letter)
     {
-        _activeWord = _letterTyper.TryToTypeLetter(letter, _activeWord, _existingWords);
+        var newWord = _letterTyper.TryToTypeLetter(letter, _activeWord, _existingWords); // TODO This is shit
+        if (newWord)
+        {
+            _activeWord = newWord;
+        }
     }
 
-    private void onWordCompleted()
+    private async void onWordCompleted()
     {
         _pointSystem.IncrementScore(1);
 
@@ -106,8 +113,12 @@ public class GameManager : MonoBehaviour
         _activeWord.OnWordNotCompleted -= onWordNotCompleted;
 
         _existingWords.Remove(_activeWord);
-        Destroy(_activeWord.gameObject);
+
+        var targetTransformForAnimation = _activeWord.transform;
         _activeWord = null;
+
+        await _spriteAnimation.AnimateWordCompleted(targetTransformForAnimation);
+        Destroy(targetTransformForAnimation.gameObject);
     }
 
     private void onWordNotCompleted(Word word)

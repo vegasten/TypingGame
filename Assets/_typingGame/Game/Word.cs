@@ -18,6 +18,8 @@ public class Word : MonoBehaviour
     private float _fallingSpeed;
     private float _yDestroyHeight;
 
+    private bool _canFail = true;
+
     private void Awake()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
@@ -27,7 +29,7 @@ public class Word : MonoBehaviour
     {
         _rigidBody.velocity = new Vector2(0, -_fallingSpeed);
 
-        if (isInDestroyArea())
+        if (_canFail && isInDestroyArea())
         {
             destroyWord();
         }
@@ -52,6 +54,7 @@ public class Word : MonoBehaviour
 
             if (_currentTypedIndex == _word.Length)
             {
+                _canFail = false;
                 OnWordFinishedTyped?.Invoke();
             }
         }

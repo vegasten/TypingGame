@@ -15,14 +15,14 @@ public class LetterTyper
 
             activeWord = wordWithCorrectFirstLetter;
             activeWord.TryToTypeNextLetter(letter);
+            return activeWord;
         }
 
         else
         {
             activeWord.TryToTypeNextLetter(letter);
         }
-
-        return activeWord;
+        return null;
     }
 
     private Word existingWordWithFirstLetter(char letter, HashSet<Word> wordsToCheck)

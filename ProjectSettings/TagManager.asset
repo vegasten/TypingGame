@@ -41,11 +41,20 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Sky
+    uniqueID: 2391535605
+    locked: 0
   - name: Background
     uniqueID: 4201301109
     locked: 0
   - name: Middleground
     uniqueID: 2759245355
+    locked: 0
+  - name: MiddleForeground
+    uniqueID: 120092519
+    locked: 0
+  - name: CannonLayer
+    uniqueID: 3358804865
     locked: 0
   - name: Foreground
     uniqueID: 4056678175
