@@ -2480,6 +2480,8 @@ MonoBehaviour:
     type: 3}
   _explosionParticleEffectPrefab: {fileID: 2691170527048780469, guid: cf04ca8610d092f43b4a64eb27548098,
     type: 3}
+  _bigExplosionParticleEffectPrefab: {fileID: 2691170527048780469, guid: 481f88e0bf0891c4c820c8ad28b1b57c,
+    type: 3}
   _smokeParticleEffectPrefab: {fileID: 2691170527048780469, guid: bd204bb3e9ee91f47880258f2e862d45,
     type: 3}
   _cameraShaker: {fileID: 170757341}

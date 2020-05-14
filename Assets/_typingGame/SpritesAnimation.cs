@@ -16,6 +16,7 @@ public class SpritesAnimation : MonoBehaviour
 
     [Header("Particle effects")]
     [SerializeField] private GameObject _explosionParticleEffectPrefab = null;
+    [SerializeField] private GameObject _bigExplosionParticleEffectPrefab = null;
     [SerializeField] private GameObject _smokeParticleEffectPrefab = null;
 
     [Header("Camera Shake")]
@@ -41,9 +42,12 @@ public class SpritesAnimation : MonoBehaviour
         await shootCannonAtPosition(targetWorldPosition);
     }
 
-    public void AnimateWordFailed(Transform target)
+    public void AnimateWordFailed(Vector3 canvasTarget)
     {
+        var targetWorldPosition = Camera.main.ScreenToWorldPoint(new Vector3(canvasTarget.x, canvasTarget.y, 10));
+
         _cameraShaker.Shake(0.3f, 0.3f);
+        spawnParticleSystemAtPosition(targetWorldPosition, _bigExplosionParticleEffectPrefab);
     }
 
     private async Task shootCannonAtPosition(Vector3 targetPosition) 
