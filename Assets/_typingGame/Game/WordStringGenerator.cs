@@ -11,14 +11,14 @@ public class WordStringGenerator
         _wordGenerator.InitializeDataBase();
     }
 
-    public string GenerateRandomWordWithUniqueFirstLetter(HashSet<Word> existingWords)
+    public string GenerateRandomWordWithUniqueFirstLetter(HashSet<Word> existingWords, RulesDataModel rulesData)
     {
         bool acceptableWordIsFound = false;
         string generatedWord = "";
 
         while (!acceptableWordIsFound)
         {
-            generatedWord = _wordGenerator.GetRandomWord(1, 3);
+            generatedWord = _wordGenerator.GetRandomWord(rulesData.MinWordLength, rulesData.MaxWordLength);
 
             if (hasNoEqualFirstLetters(existingWords, generatedWord))
             {

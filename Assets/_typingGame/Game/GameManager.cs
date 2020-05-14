@@ -70,7 +70,9 @@ public class GameManager : MonoBehaviour
             DestroyHeight = _destroyHeight,
             MaxNumberOfAliveWords = difficultyData.MaxWordsAtTheSameTime,
             TimeBetweenSpawningWord = difficultyData.TimeBetweenSpawningWord,
-            DamageOnFailedWord = 1
+            DamageOnFailedWord = 1,
+            MinWordLength = difficultyData.MinWordLength,
+            MaxWordLength = difficultyData.MaxWordLength
         };
     }
 
@@ -86,6 +88,7 @@ public class GameManager : MonoBehaviour
             if (_existingWords.Count < _rules.MaxNumberOfAliveWords)
             {
                 var word = _wordSpawner.SpawnRandomWord(_existingWords, _rules);
+                word.OnLetterSuccesfullyTyped += onLetterSuccessfullyTyped;
                 word.OnWordFinishedTyped += onWordCompleted;
                 word.OnWordNotCompleted += onWordNotCompleted;
 
@@ -106,9 +109,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private async void onWordCompleted()
+    private void onLetterSuccessfullyTyped()
     {
         _pointSystem.IncrementScore(1);
+    }
+
+    private async void onWordCompleted()
+    {
+        _pointSystem.IncrementScore(_activeWord.GetWord.Length);
 
         _activeWord.OnWordFinishedTyped -= onWordCompleted;
         _activeWord.OnWordNotCompleted -= onWordNotCompleted;
@@ -126,6 +134,7 @@ public class GameManager : MonoBehaviour
     {
         _healthSystem.TakeDamage(_rules.DamageOnFailedWord);
 
+        word.OnLetterSuccesfullyTyped -= onLetterSuccessfullyTyped;
         word.OnWordFinishedTyped -= onWordCompleted;
         word.OnWordNotCompleted -= onWordNotCompleted;
 

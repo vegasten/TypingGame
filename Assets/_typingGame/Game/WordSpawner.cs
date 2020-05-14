@@ -15,7 +15,7 @@ public class WordSpawner : MonoBehaviour
 
     public Word SpawnRandomWord(HashSet<Word> existingWords, RulesDataModel rulesData)
     {
-        string wordString = _wordStringGenerator.GenerateRandomWordWithUniqueFirstLetter(existingWords);
+        string wordString = _wordStringGenerator.GenerateRandomWordWithUniqueFirstLetter(existingWords, rulesData);
         Vector2 randomPosition = getRandomPositionOnWordContainer();
 
         var word = Instantiate(_wordDisplayPrefab, _wordContainer).GetComponent<Word>();

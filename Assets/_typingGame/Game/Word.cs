@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Word : MonoBehaviour
 {
+    public event Action OnLetterSuccesfullyTyped;
     public event Action OnWordFinishedTyped;
     public event Action<Word> OnWordNotCompleted;
 
@@ -52,6 +53,8 @@ public class Word : MonoBehaviour
     {
         if (letter.Equals(_word[_currentTypedIndex]))
         {
+            OnLetterSuccesfullyTyped?.Invoke();
+
             _display.ColorNextLetter();
             _currentTypedIndex++;
 
