@@ -14,7 +14,6 @@ public class LetterTyper
             }
 
             activeWord = wordWithCorrectFirstLetter;
-            activeWord.TryToTypeNextLetter(letter);
             return activeWord;
         }
 

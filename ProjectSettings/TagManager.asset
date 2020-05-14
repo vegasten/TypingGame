@@ -56,6 +56,9 @@ TagManager:
   - name: CannonLayer
     uniqueID: 3358804865
     locked: 0
+  - name: ExplosionLayer
+    uniqueID: 3799220819
+    locked: 0
   - name: Foreground
     uniqueID: 4056678175
     locked: 0

@@ -102,6 +102,7 @@ public class GameManager : MonoBehaviour
         if (newWord)
         {
             _activeWord = newWord;
+            newWord.TryToTypeNextLetter(letter);
         }
     }
 
@@ -149,6 +150,7 @@ public class GameManager : MonoBehaviour
         _activeWord = null;
 
         _gameEndScreenPresenter.SetGameEndScreenUI(_pointSystem.Points);
+        _pointSystem.SetScorePanelActive(false);
         _gameEndScreenPresenter.gameObject.SetActive(true);
         _pointSystem.ResetScore();
     }

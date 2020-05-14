@@ -8,6 +8,7 @@ public class WordStringGenerator
     public WordStringGenerator()
     {
         _wordGenerator = new RandomWordDatabase();
+        _wordGenerator.InitializeDataBase();
     }
 
     public string GenerateRandomWordWithUniqueFirstLetter(HashSet<Word> existingWords)
@@ -17,7 +18,7 @@ public class WordStringGenerator
 
         while (!acceptableWordIsFound)
         {
-            generatedWord = _wordGenerator.GetRandomWord();
+            generatedWord = _wordGenerator.GetRandomWord(1, 3);
 
             if (hasNoEqualFirstLetters(existingWords, generatedWord))
             {
