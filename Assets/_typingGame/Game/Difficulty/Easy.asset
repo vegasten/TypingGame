@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Easy
   m_EditorClassIdentifier: 
   Difficulty: 0
-  FallingSpeed: 50
+  FallingSpeed: 25
   TimeBetweenSpawningWord: 2
   MinWordLength: 1
   MaxWordLength: 3

@@ -14,7 +14,9 @@ public class RandomWordDatabase
             {2, new List<string>()},
             {3, new List<string>()},
             {4, new List<string>()},
-            {5, new List<string>()}
+            {5, new List<string>()},
+            {6, new List<string>()},
+            {7, new List<string>()}
         };
 
         using (StreamReader sr = new StreamReader("Assets/Resources/ordliste.txt"))
