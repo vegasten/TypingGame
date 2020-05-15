@@ -32,7 +32,8 @@ public class RandomWordDatabase
 
                 if (filteredListOfWords.Length == 0)
                 {
-                    continue;                 }
+                    continue;
+                }
                 try
                 {
                     _lengthOfWordDictionary[filteredListOfWords[0].Length].AddRange(filteredListOfWords);
@@ -47,9 +48,10 @@ public class RandomWordDatabase
 
     public string GetRandomWord(int minLength, int maxLength)
     {
-            int randomLength = Random.Range(minLength, maxLength + 1);
-            var listOfWords = _lengthOfWordDictionary[randomLength];       
+        int randomLength = RandomWeight.Instance.GetRandomNumber(minLength, maxLength);
 
-            return listOfWords[Random.Range(0, listOfWords.Count)];               
+        var listOfWords = _lengthOfWordDictionary[randomLength];
+
+        return listOfWords[Random.Range(0, listOfWords.Count)];
     }
 }
