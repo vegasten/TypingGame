@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
     [Header("Animation")]
     [SerializeField] private SpritesAnimation _spriteAnimation = null;
 
+    [Header("Audio")]
+    [SerializeField] private PirateSceneAudio _audio;
+
     private LetterTyper _letterTyper = null;
 
     private Word _activeWord;
@@ -40,6 +43,7 @@ public class GameManager : MonoBehaviour
         initializeDifficultyRules();
 
         _inputReader.OnLetterTyped += typeLetter;
+        _letterTyper.OnActivatingNewWordFailed += onLetterTypingFailed;
         _healthSystem.OnDeath += onGameLost;
 
         _gameEndScreenPresenter.OnRestartButtonClicked += restartGame;
@@ -52,6 +56,7 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         _inputReader.OnLetterTyped -= typeLetter;
+        _letterTyper.OnActivatingNewWordFailed -= onLetterTypingFailed;
         _healthSystem.OnDeath -= onGameLost;
 
         _gameEndScreenPresenter.OnRestartButtonClicked -= restartGame;
@@ -89,6 +94,7 @@ public class GameManager : MonoBehaviour
             {
                 var word = _wordSpawner.SpawnRandomWord(_existingWords, _rules);
                 word.OnLetterSuccesfullyTyped += onLetterSuccessfullyTyped;
+                word.OnLetterTypingFailed += onLetterTypingFailed;
                 word.OnWordFinishedTyped += onWordCompleted;
                 word.OnWordNotCompleted += onWordNotCompleted;
 
@@ -112,6 +118,12 @@ public class GameManager : MonoBehaviour
     private void onLetterSuccessfullyTyped()
     {
         _pointSystem.IncrementScore(1);
+        _audio.playLetterHitSound();
+    }
+
+    private void onLetterTypingFailed()
+    {
+        _audio.playLetterMissSound();
     }
 
     private async void onWordCompleted()
@@ -135,6 +147,7 @@ public class GameManager : MonoBehaviour
         _healthSystem.TakeDamage(_rules.DamageOnFailedWord);
 
         word.OnLetterSuccesfullyTyped -= onLetterSuccessfullyTyped;
+        word.OnLetterTypingFailed -= onLetterTypingFailed;
         word.OnWordFinishedTyped -= onWordCompleted;
         word.OnWordNotCompleted -= onWordNotCompleted;
 

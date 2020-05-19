@@ -22,7 +22,9 @@ public class SpritesAnimation : MonoBehaviour
     [Header("Camera Shake")]
     [SerializeField] private CameraShaker _cameraShaker;
 
-
+    [Header("Audio")]
+    [SerializeField] private PirateSceneAudio _audio;
+     
     private void Start()
     {
         animateSurroundings();
@@ -46,6 +48,7 @@ public class SpritesAnimation : MonoBehaviour
     {
         var targetWorldPosition = Camera.main.ScreenToWorldPoint(new Vector3(canvasTarget.x, canvasTarget.y, 10));
 
+        _audio.playWordFailedSound();
         _cameraShaker.Shake(0.3f, 0.3f);
         spawnParticleSystemAtPosition(targetWorldPosition, _bigExplosionParticleEffectPrefab);
     }
@@ -57,6 +60,7 @@ public class SpritesAnimation : MonoBehaviour
                
         _cannon.right = targetPosition - _cannon.position;
         spawnParticleSystemAtPosition(_cannonSpawnPoint.position, _smokeParticleEffectPrefab);
+        _audio.playCannonShotSound();
 
         var cannonball = Instantiate(_cannonBallPrefab, _cannonSpawnPoint.position, Quaternion.identity);
         cannonball.transform.DOMove(targetPosition, animationTime).SetEase(Ease.Linear);
@@ -64,6 +68,7 @@ public class SpritesAnimation : MonoBehaviour
         await Task.Delay((int)(animationTime * 1000));
 
         _cameraShaker.Shake(0.1f, 0.1f);
+        _audio.playExplosionSound();
 
         spawnParticleSystemAtPosition(cannonball.transform.position, _explosionParticleEffectPrefab);
         Destroy(cannonball);

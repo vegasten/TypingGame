@@ -14,6 +14,9 @@ public class StartMenu : MonoBehaviour
     [SerializeField] private Color _mediumColor;
     [SerializeField] private Color _hardColor;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource _buttonClickAudio;
+
     private void Start()
     {
         _startGameButton.onClick.AddListener(onStartGame);
@@ -24,11 +27,15 @@ public class StartMenu : MonoBehaviour
 
     private void onStartGame()
     {
+        _buttonClickAudio.Play();
+
         ExecutiveManager.Instance.LoadGameScene();
     }
 
     private void onChangeDifficulty()
     {
+        _buttonClickAudio.Play();
+
         var currentDifficulty = ExecutiveManager.Instance.GetCurrentDifficultyData();
         var allDifficulties = ExecutiveManager.Instance.AllDifficultiesData;
 

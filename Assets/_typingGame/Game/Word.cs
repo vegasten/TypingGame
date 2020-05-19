@@ -5,6 +5,7 @@ using UnityEngine;
 public class Word : MonoBehaviour
 {
     public event Action OnLetterSuccesfullyTyped;
+    public event Action OnLetterTypingFailed;
     public event Action OnWordFinishedTyped;
     public event Action<Word> OnWordNotCompleted;
 
@@ -63,6 +64,10 @@ public class Word : MonoBehaviour
                 _canFail = false;
                 OnWordFinishedTyped?.Invoke();
             }
+        }
+        else
+        {
+            OnLetterTypingFailed?.Invoke();
         }
     }
 
