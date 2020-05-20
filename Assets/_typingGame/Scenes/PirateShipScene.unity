@@ -214,6 +214,17 @@ PrefabInstance:
       propertyPath: _wordContainer
       value: 
       objectReference: {fileID: 300789633}
+    - target: {fileID: 742029003967757765, guid: 73937010c9e5b8349a6f62c1e9b3457b,
+        type: 3}
+      propertyPath: _testImage
+      value: 
+      objectReference: {fileID: 8403916133079635117, guid: 0b8268bf50395914cb4150702ebed3cb,
+        type: 3}
+    - target: {fileID: 742029003967757765, guid: 73937010c9e5b8349a6f62c1e9b3457b,
+        type: 3}
+      propertyPath: _canvas
+      value: 
+      objectReference: {fileID: 1153189287}
     - target: {fileID: 2851201968525955912, guid: 73937010c9e5b8349a6f62c1e9b3457b,
         type: 3}
       propertyPath: _countdown

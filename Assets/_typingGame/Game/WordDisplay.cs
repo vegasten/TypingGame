@@ -22,7 +22,7 @@ public class WordDisplay : MonoBehaviour
         _text.text = $"<color={_neutralColor}>{word}</color>";
         _word = word;
 
-        transform.position = randomPosition;
+        transform.localPosition = randomPosition;
     }
 
     public void SetWord(string word)
