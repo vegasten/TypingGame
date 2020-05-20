@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     private HashSet<Word> _existingWords;
 
     private RulesDataModel _rules;
+    private int _completedWords = 0;
 
     private bool _shouldGenerateWords = true;
 
@@ -129,6 +130,13 @@ public class GameManager : MonoBehaviour
     private async void onWordCompleted()
     {
         _pointSystem.IncrementScore(_activeWord.GetWord.Length);
+        _completedWords++;
+
+        if (_completedWords % 10 == 0)
+        {
+            increaseDifficulty();
+        }
+
 
         _activeWord.OnWordFinishedTyped -= onWordCompleted;
         _activeWord.OnWordNotCompleted -= onWordNotCompleted;
@@ -185,5 +193,32 @@ public class GameManager : MonoBehaviour
     private void restartGame()
     {
         ExecutiveManager.Instance.LoadGameScene();
+    }
+
+    private void increaseDifficulty() // TODO This is a massive hack 
+    {
+        Debug.Log($"{_completedWords} of completed words! Increasing difficulty!");
+
+
+        int maxWordLength = 7;
+        int maxWordsAlive = 15;
+        float minimunSpawningDelay = 0.2f;
+
+        if (_rules.MaxWordLength < maxWordLength && _completedWords % 20 == 0)
+        {
+            _rules.MaxWordLength++;
+            return;
+        }
+        else if (_rules.MaxNumberOfAliveWords < maxWordsAlive && (_completedWords + 10) % 20 == 0)
+        {
+            _rules.MaxNumberOfAliveWords++;
+        }
+
+        if (_rules.TimeBetweenSpawningWord > minimunSpawningDelay)
+        {
+            _rules.TimeBetweenSpawningWord -= 0.1f;
+        }
+
+        _rules.FallingSpeed += 2;
     }
 }

@@ -1,16 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class WordSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject _wordDisplayPrefab = null;
     [SerializeField] private RectTransform _wordContainer = null;
-
-    [SerializeField] private Image _testImage = null;
-
-    [Header("Debug")]
 
     private WordStringGenerator _wordStringGenerator;
 
@@ -22,24 +17,16 @@ public class WordSpawner : MonoBehaviour
     public Word SpawnRandomWord(HashSet<Word> existingWords, RulesDataModel rulesData)
     {
         string wordString = _wordStringGenerator.GenerateRandomWordWithUniqueFirstLetter(existingWords, rulesData);
-
-        //var existingRects = existingWords.Select(x => x.GetComponent<RectTransform>().rect).ToArray();
         Vector2 randomPosition = getRandomPositionOnWordContainer(existingWords);
-
         var word = Instantiate(_wordDisplayPrefab, _wordContainer).GetComponent<Word>();
-
         word.InitalizeWord(wordString, randomPosition, rulesData);
 
         return word;
     }
 
-    private List<Rect> rectsToDraw = new List<Rect>();
-    private Rect test;
-
-    private Vector2 getRandomPositionOnWordContainer(HashSet<Word> existingWords) // TODO make async?
+    private Vector2 getRandomPositionOnWordContainer(HashSet<Word> existingWords) // TODO Clean up this shit
     {
-        rectsToDraw.Clear();
-
+        var rectsToTest = new List<Rect>();
         foreach (var word in existingWords)
         {
             var rectTransform = word.GetComponent<RectTransform>();
@@ -50,7 +37,7 @@ public class WordSpawner : MonoBehaviour
             var h = rectTransform.rect.height;
 
             var rect = new Rect(x - w / 2, Screen.height - y - h / 2, w, h);
-            rectsToDraw.Add(rect);
+            rectsToTest.Add(rect);
         }
 
         var width = _wordContainer.rect.width;
@@ -71,27 +58,12 @@ public class WordSpawner : MonoBehaviour
             var testRectX = randomLocalX + Screen.width / 2 - testRectWidth / 2;
             var testRectY = -randomLocalY + 50 - testRectHeight / 2;
 
-            if (!rectsToDraw.Any(r => r.Overlaps(test = new Rect(testRectX, testRectY, testRectWidth, testRectHeight))))
+            if (!rectsToTest.Any(r => r.Overlaps(new Rect(testRectX, testRectY, testRectWidth, testRectHeight))))
             {
                 isPlacementAccepted = true;
             }
         }
 
         return new Vector2(randomLocalX, randomLocalY);
-    }
-
-
-
-    private void OnGUI()
-    {
-        foreach (var rect in rectsToDraw)
-        {
-            GUI.Box(rect, "BOX");
-        }
-
-        if (test != null)
-        {
-            GUI.Box(test, "TEST");
-        }
     }
 }
