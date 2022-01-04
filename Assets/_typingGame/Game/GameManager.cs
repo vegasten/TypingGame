@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
         _audio.playLetterMissSound();
     }
 
-    private async void onWordCompleted()
+    private void onWordCompleted()
     {
         _pointSystem.IncrementScore(_activeWord.GetWord.Length);
         _completedWords++;
@@ -146,8 +146,14 @@ public class GameManager : MonoBehaviour
         var targetTransformForAnimation = _activeWord.transform;
         _activeWord = null;
 
-        await _spriteAnimation.AnimateWordCompleted(targetTransformForAnimation);
-        Destroy(targetTransformForAnimation.gameObject);
+        _spriteAnimation.AnimateWordCompleted(targetTransformForAnimation);
+        StartCoroutine(destroyWordAfterDelay(targetTransformForAnimation.gameObject));
+    }
+    
+    private IEnumerator destroyWordAfterDelay(GameObject word)
+    {
+        yield return new WaitForSeconds(0.4f); // TODO Magic number same as in SpritesAnimation
+        Destroy(word);
     }
 
     private void onWordNotCompleted(Word word)

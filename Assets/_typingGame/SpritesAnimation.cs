@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using System.Collections;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -38,10 +37,10 @@ public class SpritesAnimation : MonoBehaviour
         _boat.DOMove(_boat.transform.position + new Vector3(3f, 0.2f, 0), 3).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
     }
 
-    public async Task AnimateWordCompleted(Transform target)
+    public void AnimateWordCompleted(Transform target)
     {
         var targetWorldPosition = Camera.main.ScreenToWorldPoint(new Vector3(target.position.x, target.position.y, 10));
-        await shootCannonAtPosition(targetWorldPosition);
+        shootCannonAtPosition(targetWorldPosition);
     }
 
     public void AnimateWordFailed(Vector3 canvasTarget)
@@ -53,25 +52,42 @@ public class SpritesAnimation : MonoBehaviour
         spawnParticleSystemAtPosition(targetWorldPosition, _bigExplosionParticleEffectPrefab);
     }
 
-    private async Task shootCannonAtPosition(Vector3 targetPosition) 
+    private void shootCannonAtPosition(Vector3 targetPosition) 
     {
-
+        Debug.Log("Starting shoot cannon");
         float animationTime = 0.4f; // TODO Calculate this number from the distance and vary by set speed
                
         _cannon.right = targetPosition - _cannon.position;
         spawnParticleSystemAtPosition(_cannonSpawnPoint.position, _smokeParticleEffectPrefab);
         _audio.playCannonShotSound();
 
+        Debug.Log("Instantiating ball");
         var cannonball = Instantiate(_cannonBallPrefab, _cannonSpawnPoint.position, Quaternion.identity);
         cannonball.transform.DOMove(targetPosition, animationTime).SetEase(Ease.Linear);
 
-        await Task.Delay((int)(animationTime * 1000));
+        StartCoroutine(explodeCannonBallAfterDelay(cannonball, animationTime));
+    }
+
+    private IEnumerator explodeCannonBallAfterDelay(GameObject cannonball, float animationTime)
+    {
+        Debug.Log("Delaying");
+        yield return new WaitForSeconds(animationTime);
+
+        //await Task.Delay((int)(animationTime * 1000)).ConfigureAwait(true);
+        Debug.Log("Done delaying");
 
         _cameraShaker.Shake(0.1f, 0.1f);
+
+        Debug.Log("Play sound");
         _audio.playExplosionSound();
 
+        Debug.Log("Spawn particles");
         spawnParticleSystemAtPosition(cannonball.transform.position, _explosionParticleEffectPrefab);
+
+        Debug.Log("Destroy cannonball");
         Destroy(cannonball);
+
+        Debug.Log("Done");
     }
 
     private void spawnParticleSystemAtPosition(Vector3 position, GameObject particleEffectPrefab)

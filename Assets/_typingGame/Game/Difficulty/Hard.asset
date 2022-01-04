@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Hard
   m_EditorClassIdentifier: 
   Difficulty: 2
-  FallingSpeed: 100
-  TimeBetweenSpawningWord: 0.1
+  FallingSpeed: 50
+  TimeBetweenSpawningWord: 1
   MinWordLength: 3
   MaxWordLength: 5
-  MaxWordsAtTheSameTime: 26
+  MaxWordsAtTheSameTime: 7

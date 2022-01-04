@@ -245,6 +245,11 @@ PrefabInstance:
       propertyPath: _audio
       value: 
       objectReference: {fileID: 1348453518}
+    - target: {fileID: 2851201968525955912, guid: 73937010c9e5b8349a6f62c1e9b3457b,
+        type: 3}
+      propertyPath: _destroyHeight
+      value: 150
+      objectReference: {fileID: 0}
     - target: {fileID: 2851201968525955913, guid: 73937010c9e5b8349a6f62c1e9b3457b,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -19,33 +19,61 @@ public class RandomWordDatabase
             {7, new List<string>()}
         };
 
-        using (StreamReader sr = new StreamReader("Assets/Resources/ordliste.txt"))
+        var textFile = Resources.Load<TextAsset>("ordliste");
+        var lines = textFile.ToString().Split('\n'); // TODO this produces an error
+
+        foreach (var line in lines)
         {
-            string line;
-            while ((line = sr.ReadLine()) != null)
+            if (string.IsNullOrEmpty(line))
             {
-                if (string.IsNullOrEmpty(line))
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                var lineOfWords = line.Trim().ToLower().Split(' ');
-                var filteredListOfWords = lineOfWords.Where(x => !x.Contains('æ') && !x.Contains('ø') && !x.Contains('å')).ToArray();
+            var lineOfWords = line.Trim().ToLower().Split(' ');
+            var filteredListOfWords = lineOfWords.Where(x => !x.Contains('æ') && !x.Contains('ø') && !x.Contains('å')).ToArray();
 
-                if (filteredListOfWords.Length == 0)
-                {
-                    continue;
-                }
-                try
-                {
-                    _lengthOfWordDictionary[filteredListOfWords[0].Length].AddRange(filteredListOfWords);
-                }
-                catch
-                {
-                    Debug.LogError($"Error in initializing dictionary with line: {line}");
-                }
+            if (filteredListOfWords.Length == 0)
+            {
+                continue;
+            }
+            try
+            {
+                _lengthOfWordDictionary[filteredListOfWords[0].Length].AddRange(filteredListOfWords);
+            }
+            catch
+            {
+                Debug.LogError($"Error in initializing dictionary with line: {line}");
             }
         }
+
+
+        //using (StreamReader sr = new StreamReader("Assets/Resources/ordliste.txt"))
+        //{
+        //    string line;
+        //    while ((line = sr.ReadLine()) != null)
+        //    {
+        //        if (string.IsNullOrEmpty(line))
+        //        {
+        //            continue;
+        //        }
+
+        //        var lineOfWords = line.Trim().ToLower().Split(' ');
+        //        var filteredListOfWords = lineOfWords.Where(x => !x.Contains('æ') && !x.Contains('ø') && !x.Contains('å')).ToArray();
+
+        //        if (filteredListOfWords.Length == 0)
+        //        {
+        //            continue;
+        //        }
+        //        try
+        //        {
+        //            _lengthOfWordDictionary[filteredListOfWords[0].Length].AddRange(filteredListOfWords);
+        //        }
+        //        catch
+        //        {
+        //            Debug.LogError($"Error in initializing dictionary with line: {line}");
+        //        }
+        //    }
+        //}
     }
 
     public string GetRandomWord(int minLength, int maxLength)
